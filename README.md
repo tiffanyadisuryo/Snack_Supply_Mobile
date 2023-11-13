@@ -244,395 +244,395 @@ Komponen-komponennya adalah:
 * Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step! (bukan hanya sekadar mengikuti tutorial) <br>
     1. Pertama-tama, membuat folder screens dan widgets dalam folder snack_supply/lib. kemudian memindahkan menu.dart ke dalam folder tersebut serta membuat file baru dengan nama snacklist_form.dart. Selain itu membuat folder widgets, kemudian membuat file baru bernama snack_card.dart dan left_drawer.dart.
     2. Mengganti kode pada menu.dart menjadi sebagai berikut:
-    ```
-        import 'package:flutter/material.dart';
-        import 'package:snack_supply/screens/snacklist_form.dart';
-        import 'package:snack_supply/widgets/left_drawer.dart';
-        import 'package:snack_supply/widgets/snack_card.dart';
+        ```
+            import 'package:flutter/material.dart';
+            import 'package:snack_supply/screens/snacklist_form.dart';
+            import 'package:snack_supply/widgets/left_drawer.dart';
+            import 'package:snack_supply/widgets/snack_card.dart';
 
-        class MyHomePage extends StatelessWidget {
-            MyHomePage({Key? key}) : super(key: key);
+            class MyHomePage extends StatelessWidget {
+                MyHomePage({Key? key}) : super(key: key);
 
-            final List<Item> items = [
-                Item("Lihat Item", Icons.checklist),
-                Item("Tambah Item", Icons.add_circle),
-                Item("Logout", Icons.logout),
-            ];
+                final List<Item> items = [
+                    Item("Lihat Item", Icons.checklist),
+                    Item("Tambah Item", Icons.add_circle),
+                    Item("Logout", Icons.logout),
+                ];
 
-            @override
-            Widget build(BuildContext context) {
-                return Scaffold(
-                    appBar: AppBar(
-                        title: const Text(
-                        'Snack Supply',
-                        style: const TextStyle(color: Colors.white),
-                        ),
-                        backgroundColor: Colors.indigo,
-                        foregroundColor: Colors.white,
-                    ),
-                        // Masukkan drawer sebagai parameter nilai drawer dari widget Scaffold
-                    drawer: const LeftDrawer(),
-                    body: SingleChildScrollView(
-                        // Widget wrapper yang dapat discroll
-                        child: Padding(
-                        padding: const EdgeInsets.all(10.0), // Set padding dari halaman
-                        child: Column(
-                            // Widget untuk menampilkan children secara vertikal
-                            children: <Widget>[
-                            const Padding(
-                                padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                                // Widget Text untuk menampilkan tulisan dengan alignment center dan style yang sesuai
-                                child: Text(
-                                'PBP Snack Supply', // Text
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                ),
-                                ),
+                @override
+                Widget build(BuildContext context) {
+                    return Scaffold(
+                        appBar: AppBar(
+                            title: const Text(
+                            'Snack Supply',
+                            style: const TextStyle(color: Colors.white),
                             ),
-                            // Grid layout
-                            GridView.count(
-                                // Container pada card kita.
-                                primary: true,
-                                padding: const EdgeInsets.all(20),
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
-                                crossAxisCount: 3,
-                                shrinkWrap: true,
-                                children: items.asMap().entries.map((entry) {
-                                // Iterasi untuk setiap item
-                                final int idx = entry.key;
-                                final Item item = entry.value;
-                                return SnackCard(item, idx);
-                                }).toList(),
-                            ),
-                            ],
+                            backgroundColor: Colors.indigo,
+                            foregroundColor: Colors.white,
                         ),
-                        ),
-                    ),
-                    );
-            }
-        }
-    ```
-    ditambahkan ```drawer: const LeftDrawer(),``` dan memindahkan Class Item, List Color, dan SnackCard ke file snack_card.dart.<br>
-    3. Maka snack_card berisi sebagai berikut:
-    ```
-        import 'package:flutter/material.dart';
-        import 'package:snack_supply/widgets/left_drawer.dart';
-        import 'package:snack_supply/screens/menu.dart';
-        import 'package:snack_supply/screens/snacklist_form.dart';
-
-        class Item {
-        final String name;
-        final IconData icon;
-
-        Item(this.name, this.icon);
-        }
-
-        final List<Color> buttonColors = [
-            Colors.red,
-            Colors.green,
-            Colors.blue,
-            ];
-
-        class SnackCard extends StatelessWidget {
-        final Item item;
-        final int colorIdx;
-
-        const SnackCard(this.item, this.colorIdx, {super.key}); // Constructor
-
-        @override
-        Widget build(BuildContext context) {
-            return Material(
-            color: buttonColors[colorIdx],
-            child: InkWell(
-                // Area responsive terhadap sentuhan
-                onTap: () {
-                // Memunculkan SnackBar ketika diklik
-                ScaffoldMessenger.of(context)
-                    ..hideCurrentSnackBar()
-                    ..showSnackBar(SnackBar(
-                        content: Text("Kamu telah menekan tombol ${item.name}!")));
-
-                // Navigate ke route yang sesuai (tergantung jenis tombol)
-                if (item.name == "Tambah Item") {
-                    // Navigator.push untuk melakukan navigasi ke MaterialPageRoute yang mencakup SnackFormPage.
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => SnackFormPage()));
-                }
-                },
-                child: Container(
-                // Container untuk menyimpan Icon dan Text
-                padding: const EdgeInsets.all(8),
-                child: Center(
-                    child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                        Icon(
-                        item.icon,
-                        color: Colors.white,
-                        size: 30.0,
-                        ),
-                        const Padding(padding: EdgeInsets.all(3)),
-                        Text(
-                        item.name,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(color: Colors.white),
-                        ),
-                    ],
-                    ),
-                ),
-                ),
-            ),
-            );
-        }
-        }
-    ```
-    menambahkan if, sehingga saat tombol tambah item ditekan akan melakukan navigasi ke MaterialPageRoute yang mencakup SnackFormPage menggunakan Navigator.push. <br>
-    4. Kemudian isi snacklist_form.dart dengan kode berikut:
-    ```
-        import 'package:flutter/material.dart';
-        import 'package:snack_supply/widgets/left_drawer.dart';
-
-        class SnackFormPage extends StatefulWidget {
-            const SnackFormPage({super.key});
-
-            @override
-            State<SnackFormPage> createState() => _SnackFormPageState();
-        }
-
-        class _SnackFormPageState extends State<SnackFormPage> {
-            final _formKey = GlobalKey<FormState>();
-            String _name = "";
-            int _price = 0;
-            String _description = "";
-            @override
-            Widget build(BuildContext context) {
-                return Scaffold(
-                appBar: AppBar(
-                    title: const Center(
-                    child: Text(
-                        'Form Tambah Item',
-                    ),
-                    ),
-                    backgroundColor: Colors.indigo,
-                    foregroundColor: Colors.white,
-                ),
-                // Tambahkan drawer yang sudah dibuat di sini
-                drawer: const LeftDrawer(),
-                body: Form(
-                    key: _formKey,
-                    child: SingleChildScrollView(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                        Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextFormField(
-                            decoration: InputDecoration(
-                                hintText: "Nama Snack",
-                                labelText: "Nama Snack",
-                                border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                ),
-                            ),
-                            onChanged: (String? value) {
-                                setState(() {
-                                _name = value!;
-                                });
-                            },
-                            validator: (String? value) {
-                                if (value == null || value.isEmpty) {
-                                return "Nama tidak boleh kosong!";
-                                }
-                                return null;
-                            },
-                            ),
-                        ),
-                        Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextFormField(
-                            decoration: InputDecoration(
-                                hintText: "Harga",
-                                labelText: "Harga",
-                                border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                ),
-                            ),
-                            onChanged: (String? value) {
-                                setState(() {
-                                _price = int.parse(value!);
-                                });
-                            },
-                            validator: (String? value) {
-                                if (value == null || value.isEmpty) {
-                                return "Harga tidak boleh kosong!";
-                                }
-                                if (int.tryParse(value) == null) {
-                                return "Harga harus berupa angka!";
-                                }
-                                return null;
-                            },
-                            ),
-                        ),
-                        Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextFormField(
-                            decoration: InputDecoration(
-                                hintText: "Deskripsi",
-                                labelText: "Deskripsi",
-                                border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                ),
-                            ),
-                            onChanged: (String? value) {
-                                setState(() {
-                                _description = value!; 
-                                });
-                            },
-                            validator: (String? value) {
-                                if (value == null || value.isEmpty) {
-                                return "Deskripsi tidak boleh kosong!";
-                                }
-                                return null;
-                            },
-                            ),
-                        ),
-                        Align(
-                            alignment: Alignment.bottomCenter,
+                            // Masukkan drawer sebagai parameter nilai drawer dari widget Scaffold
+                        drawer: const LeftDrawer(),
+                        body: SingleChildScrollView(
+                            // Widget wrapper yang dapat discroll
                             child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
-                                style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all(Colors.indigo),
+                            padding: const EdgeInsets.all(10.0), // Set padding dari halaman
+                            child: Column(
+                                // Widget untuk menampilkan children secara vertikal
+                                children: <Widget>[
+                                const Padding(
+                                    padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                                    // Widget Text untuk menampilkan tulisan dengan alignment center dan style yang sesuai
+                                    child: Text(
+                                    'PBP Snack Supply', // Text
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,
+                                    ),
+                                    ),
                                 ),
-                                onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                    showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                        return AlertDialog(
-                                        title: const Text('Snack berhasil tersimpan'),
-                                        content: SingleChildScrollView(
-                                            child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                                Text('Nama: $_name'),
-                                                Text('Price: $_price'),
-                                                Text('Description: $_description')
-                                            ],
-                                            ),
-                                        ),
-                                        actions: [
-                                            TextButton(
-                                            child: const Text('OK'),
-                                            onPressed: () {
-                                                Navigator.pop(context);
-                                            },
-                                            ),
-                                        ],
-                                        );
-                                    },
-                                    );
-                                    _formKey.currentState!.reset();
-                                }
-                                },
-                                child: const Text(
-                                "Save",
-                                style: TextStyle(color: Colors.white),
+                                // Grid layout
+                                GridView.count(
+                                    // Container pada card kita.
+                                    primary: true,
+                                    padding: const EdgeInsets.all(20),
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 10,
+                                    crossAxisCount: 3,
+                                    shrinkWrap: true,
+                                    children: items.asMap().entries.map((entry) {
+                                    // Iterasi untuk setiap item
+                                    final int idx = entry.key;
+                                    final Item item = entry.value;
+                                    return SnackCard(item, idx);
+                                    }).toList(),
                                 ),
+                                ],
                             ),
                             ),
                         ),
-                        ]
-                    )
+                        );
+                }
+            }
+        ```
+        ditambahkan ```drawer: const LeftDrawer(),``` dan memindahkan Class Item, List Color, dan SnackCard ke file snack_card.dart.<br>
+    3. Maka snack_card berisi sebagai berikut:
+        ```
+            import 'package:flutter/material.dart';
+            import 'package:snack_supply/widgets/left_drawer.dart';
+            import 'package:snack_supply/screens/menu.dart';
+            import 'package:snack_supply/screens/snacklist_form.dart';
+
+            class Item {
+            final String name;
+            final IconData icon;
+
+            Item(this.name, this.icon);
+            }
+
+            final List<Color> buttonColors = [
+                Colors.red,
+                Colors.green,
+                Colors.blue,
+                ];
+
+            class SnackCard extends StatelessWidget {
+            final Item item;
+            final int colorIdx;
+
+            const SnackCard(this.item, this.colorIdx, {super.key}); // Constructor
+
+            @override
+            Widget build(BuildContext context) {
+                return Material(
+                color: buttonColors[colorIdx],
+                child: InkWell(
+                    // Area responsive terhadap sentuhan
+                    onTap: () {
+                    // Memunculkan SnackBar ketika diklik
+                    ScaffoldMessenger.of(context)
+                        ..hideCurrentSnackBar()
+                        ..showSnackBar(SnackBar(
+                            content: Text("Kamu telah menekan tombol ${item.name}!")));
+
+                    // Navigate ke route yang sesuai (tergantung jenis tombol)
+                    if (item.name == "Tambah Item") {
+                        // Navigator.push untuk melakukan navigasi ke MaterialPageRoute yang mencakup SnackFormPage.
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => SnackFormPage()));
+                    }
+                    },
+                    child: Container(
+                    // Container untuk menyimpan Icon dan Text
+                    padding: const EdgeInsets.all(8),
+                    child: Center(
+                        child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                            Icon(
+                            item.icon,
+                            color: Colors.white,
+                            size: 30.0,
+                            ),
+                            const Padding(padding: EdgeInsets.all(3)),
+                            Text(
+                            item.name,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(color: Colors.white),
+                            ),
+                        ],
+                        ),
+                    ),
                     ),
                 ),
                 );
             }
-        }
-    ```  
-    ini merupakan tampilan dari page Form saat menekan tombol tambah Item. Terdapat left drawer juga. Menggunakan TextFormField untuk menerima input. Menggunakan padding untuk mengatur tampilan setiap input. Jika form nya sesuai ketentuan (terisi, bukan angka untuk price), maka akan memunculkan dialog box menggunakan showDialog() yang berisi nama, price, dan description. Selain itu textField langsung di-clear kan. Jika belum tepat input-nya maka akan muncul validator. <br>
-    5. Terakhir, mengisi left_drawer.dart dengan kode berikut:
-    ```
-        import 'package:flutter/material.dart';
-        import 'package:snack_supply/screens/menu.dart';
-        import 'package:snack_supply/screens/snacklist_form.dart';
+            }
+        ```
+        menambahkan if, sehingga saat tombol tambah item ditekan akan melakukan navigasi ke MaterialPageRoute yang mencakup SnackFormPage menggunakan Navigator.push. <br>
+    4. Kemudian isi snacklist_form.dart dengan kode berikut:
+        ```
+            import 'package:flutter/material.dart';
+            import 'package:snack_supply/widgets/left_drawer.dart';
 
-        class LeftDrawer extends StatelessWidget {
-        const LeftDrawer({super.key});
+            class SnackFormPage extends StatefulWidget {
+                const SnackFormPage({super.key});
 
-        @override
-        Widget build(BuildContext context) {
-            return Drawer(
-            child: ListView(
-                children: [
-                const DrawerHeader(
-                    decoration: BoxDecoration(
-                    color: Colors.indigo,
+                @override
+                State<SnackFormPage> createState() => _SnackFormPageState();
+            }
+
+            class _SnackFormPageState extends State<SnackFormPage> {
+                final _formKey = GlobalKey<FormState>();
+                String _name = "";
+                int _price = 0;
+                String _description = "";
+                @override
+                Widget build(BuildContext context) {
+                    return Scaffold(
+                    appBar: AppBar(
+                        title: const Center(
+                        child: Text(
+                            'Form Tambah Item',
+                        ),
+                        ),
+                        backgroundColor: Colors.indigo,
+                        foregroundColor: Colors.white,
                     ),
-                    child: Column(
+                    // Tambahkan drawer yang sudah dibuat di sini
+                    drawer: const LeftDrawer(),
+                    body: Form(
+                        key: _formKey,
+                        child: SingleChildScrollView(
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                            Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextFormField(
+                                decoration: InputDecoration(
+                                    hintText: "Nama Snack",
+                                    labelText: "Nama Snack",
+                                    border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    ),
+                                ),
+                                onChanged: (String? value) {
+                                    setState(() {
+                                    _name = value!;
+                                    });
+                                },
+                                validator: (String? value) {
+                                    if (value == null || value.isEmpty) {
+                                    return "Nama tidak boleh kosong!";
+                                    }
+                                    return null;
+                                },
+                                ),
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextFormField(
+                                decoration: InputDecoration(
+                                    hintText: "Harga",
+                                    labelText: "Harga",
+                                    border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    ),
+                                ),
+                                onChanged: (String? value) {
+                                    setState(() {
+                                    _price = int.parse(value!);
+                                    });
+                                },
+                                validator: (String? value) {
+                                    if (value == null || value.isEmpty) {
+                                    return "Harga tidak boleh kosong!";
+                                    }
+                                    if (int.tryParse(value) == null) {
+                                    return "Harga harus berupa angka!";
+                                    }
+                                    return null;
+                                },
+                                ),
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextFormField(
+                                decoration: InputDecoration(
+                                    hintText: "Deskripsi",
+                                    labelText: "Deskripsi",
+                                    border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    ),
+                                ),
+                                onChanged: (String? value) {
+                                    setState(() {
+                                    _description = value!; 
+                                    });
+                                },
+                                validator: (String? value) {
+                                    if (value == null || value.isEmpty) {
+                                    return "Deskripsi tidak boleh kosong!";
+                                    }
+                                    return null;
+                                },
+                                ),
+                            ),
+                            Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ElevatedButton(
+                                    style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all(Colors.indigo),
+                                    ),
+                                    onPressed: () {
+                                    if (_formKey.currentState!.validate()) {
+                                        showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                            return AlertDialog(
+                                            title: const Text('Snack berhasil tersimpan'),
+                                            content: SingleChildScrollView(
+                                                child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                    Text('Nama: $_name'),
+                                                    Text('Price: $_price'),
+                                                    Text('Description: $_description')
+                                                ],
+                                                ),
+                                            ),
+                                            actions: [
+                                                TextButton(
+                                                child: const Text('OK'),
+                                                onPressed: () {
+                                                    Navigator.pop(context);
+                                                },
+                                                ),
+                                            ],
+                                            );
+                                        },
+                                        );
+                                        _formKey.currentState!.reset();
+                                    }
+                                    },
+                                    child: const Text(
+                                    "Save",
+                                    style: TextStyle(color: Colors.white),
+                                    ),
+                                ),
+                                ),
+                            ),
+                            ]
+                        )
+                        ),
+                    ),
+                    );
+                }
+            }
+        ```  
+        ini merupakan tampilan dari page Form saat menekan tombol tambah Item. Terdapat left drawer juga. Menggunakan TextFormField untuk menerima input. Menggunakan padding untuk mengatur tampilan setiap input. Jika form nya sesuai ketentuan (terisi, bukan angka untuk price), maka akan memunculkan dialog box menggunakan showDialog() yang berisi nama, price, dan description. Selain itu textField langsung di-clear kan. Jika belum tepat input-nya maka akan muncul validator. <br>
+    5. Terakhir, mengisi left_drawer.dart dengan kode berikut:
+        ```
+            import 'package:flutter/material.dart';
+            import 'package:snack_supply/screens/menu.dart';
+            import 'package:snack_supply/screens/snacklist_form.dart';
+
+            class LeftDrawer extends StatelessWidget {
+            const LeftDrawer({super.key});
+
+            @override
+            Widget build(BuildContext context) {
+                return Drawer(
+                child: ListView(
                     children: [
-                        Text(
-                        'Snack Supply',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                    const DrawerHeader(
+                        decoration: BoxDecoration(
+                        color: Colors.indigo,
                         ),
-                        ),
-                        Padding(padding: EdgeInsets.all(10)),
-                        Text("Catat seluruh Snack di sini!",
-                            // gaya teks dengan center alignment, font ukuran 15, warna putih, dan weight biasa
+                        child: Column(
+                        children: [
+                            Text(
+                            'Snack Supply',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.normal,
-                            color: Colors.white,
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
                             ),
                             ),
-                    ],
+                            Padding(padding: EdgeInsets.all(10)),
+                            Text("Catat seluruh Snack di sini!",
+                                // gaya teks dengan center alignment, font ukuran 15, warna putih, dan weight biasa
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.normal,
+                                color: Colors.white,
+                                ),
+                                ),
+                        ],
+                        ),
                     ),
+                    // Bagian routing
+                    ListTile(
+                        leading: const Icon(Icons.home_outlined),
+                        title: const Text('Halaman Utama'),
+                        // Bagian redirection ke MyHomePage
+                        onTap: () {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MyHomePage(),
+                            ));
+                        },
+                    ),
+                    ListTile(
+                        leading: const Icon(Icons.add_circle),
+                        title: const Text('Tambah Item'),
+                        // Bagian redirection ke SnackFormPage
+                        onTap: () {
+                        /*
+                        routing ke SnackFormPage di sini,
+                        setelah halaman SnackFormPage sudah dibuat.
+                        */
+                        Navigator.pushReplacement(
+                            context, 
+                            MaterialPageRoute(
+                            builder: (context) => SnackFormPage(),
+                            ));
+                        },
+                    ),
+                    ],
                 ),
-                // Bagian routing
-                ListTile(
-                    leading: const Icon(Icons.home_outlined),
-                    title: const Text('Halaman Utama'),
-                    // Bagian redirection ke MyHomePage
-                    onTap: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MyHomePage(),
-                        ));
-                    },
-                ),
-                ListTile(
-                    leading: const Icon(Icons.add_circle),
-                    title: const Text('Tambah Item'),
-                    // Bagian redirection ke SnackFormPage
-                    onTap: () {
-                    /*
-                    routing ke SnackFormPage di sini,
-                    setelah halaman SnackFormPage sudah dibuat.
-                    */
-                    Navigator.pushReplacement(
-                        context, 
-                        MaterialPageRoute(
-                        builder: (context) => SnackFormPage(),
-                        ));
-                    },
-                ),
-                ],
-            ),
-            );
-        }
-        }
-    ```  
-    Terdapat Bagian routing menggunakan ListTile() yang adalah button, jika ditekan maka akan pushReplacement ke page yang diinginkan.  
+                );
+            }
+            }
+        ```  
+        Terdapat Bagian routing menggunakan ListTile() yang adalah button, jika ditekan maka akan pushReplacement ke page yang diinginkan.  
 
 
 </details>
