@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-
-class Item {
-  final String name;
-  final IconData icon;
-
-  Item(this.name, this.icon);
-}
+import 'package:snack_supply/screens/snacklist_form.dart';
+import 'package:snack_supply/widgets/left_drawer.dart';
+import 'package:snack_supply/widgets/snack_card.dart';
 
 class MyHomePage extends StatelessWidget {
     MyHomePage({Key? key}) : super(key: key);
@@ -16,13 +12,6 @@ class MyHomePage extends StatelessWidget {
         Item("Logout", Icons.logout),
     ];
 
-    final List<Color> buttonColors = [
-      Colors.red,
-      Colors.green,
-      Colors.blue,
-    ];
-
-
     @override
     Widget build(BuildContext context) {
         return Scaffold(
@@ -32,7 +21,10 @@ class MyHomePage extends StatelessWidget {
                   style: const TextStyle(color: Colors.white),
                 ),
                 backgroundColor: Colors.indigo,
+                foregroundColor: Colors.white,
               ),
+                // Masukkan drawer sebagai parameter nilai drawer dari widget Scaffold
+              drawer: const LeftDrawer(),
               body: SingleChildScrollView(
                 // Widget wrapper yang dapat discroll
                 child: Padding(
@@ -44,7 +36,7 @@ class MyHomePage extends StatelessWidget {
                         padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
                         // Widget Text untuk menampilkan tulisan dengan alignment center dan style yang sesuai
                         child: Text(
-                          'PBP Snack Supply', // Text yang menandakan Snack Supply
+                          'PBP Snack Supply', // Text
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 30,
@@ -65,7 +57,7 @@ class MyHomePage extends StatelessWidget {
                           // Iterasi untuk setiap item
                           final int idx = entry.key;
                           final Item item = entry.value;
-                          return Card(item, idx);
+                          return SnackCard(item, idx);
                         }).toList(),
                       ),
                     ],
@@ -74,56 +66,4 @@ class MyHomePage extends StatelessWidget {
               ),
             );
     }
-}
-
-final List<Color> buttonColors = [
-      Colors.red,
-      Colors.green,
-      Colors.blue,
-    ];
-
-class Card extends StatelessWidget {
-  final Item item;
-  final int colorIdx;
-
-  const Card(this.item, this.colorIdx, {super.key}); // Constructor
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: buttonColors[colorIdx],
-      child: InkWell(
-        // Area responsive terhadap sentuhan
-        onTap: () {
-          // Memunculkan SnackBar ketika diklik
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(SnackBar(
-                content: Text("Kamu telah menekan tombol ${item.name}!")));
-        },
-        child: Container(
-          // Container untuk menyimpan Icon dan Text
-          padding: const EdgeInsets.all(8),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  item.icon,
-                  color: Colors.white,
-                  size: 30.0,
-                ),
-                const Padding(padding: EdgeInsets.all(3)),
-                Text(
-                  item.name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
